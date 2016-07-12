@@ -1,4 +1,4 @@
 contract NewContract {
-    function amazing() {
+    function startGeneration() {
     }
 }
