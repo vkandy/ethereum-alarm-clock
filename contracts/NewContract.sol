@@ -1,0 +1,4 @@
+contract NewContract {
+    function amazing() {
+    }
+}
