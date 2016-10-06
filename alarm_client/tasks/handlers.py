@@ -110,8 +110,8 @@ def claim_txn_request(config, txn_request):
 
     payment_if_claimed = (
         txn_request.payment *
-        txn_request.paymentModifier *
-        txn_request.claimPaymentModifier
+        txn_request.paymentMultiplier *
+        txn_request.currentPaymentModifier
     ) // 100 // 100
     claim_deposit = 2 * txn_request.payment
     gas_to_claim = txn_request.estimateGas({'value': claim_deposit}).claim()
@@ -183,12 +183,24 @@ def execute_txn_request(config, txn_request):
         )
         return
 
+    if txn_request.isClaimedBy(web3.eth.defaultAccount):
+        expected_payment = (
+            txn_request.payment *
+            txn_request.paymentMultiplier *
+            txn_request.paymentModifier // 100 // 100
+        )
+    else:
+        expected_payment = (
+            txn_request.payment *
+            txn_request.paymentMultiplier // 100
+        )
+
     logger.info(
         "Attempting execution.  Now: %s | windowStart: %s | "
         "expectedPayment: %s | claimedBy: %s | inReservedWindow: %s",
         txn_request.now,
         txn_request.windowStart,
-        txn_request.payment * txn_request.paymentModifier // 100,
+        expected_payment,
         txn_request.claimedBy,
         "Yes" if txn_request.inReservedWindow else "No",
     )

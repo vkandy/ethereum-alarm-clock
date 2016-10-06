@@ -224,7 +224,7 @@ class TransactionRequestFactory(Contract):
 
     @property
     @block_cached
-    def claimPaymentModifier(self):
+    def currentPaymentModifier(self):
         return 100 * (
             self.now - self.claimWindowStart
         ) // self.claimWindowSize
@@ -299,7 +299,7 @@ class TransactionRequestFactory(Contract):
 
     @property
     @block_cached
-    def paymentModifier(self):
+    def paymentMultiplier(self):
         if self.web3.eth.gasPrice > self.anchorGasPrice:
             return self.anchorGasPrice * 100 // self.web3.eth.gasPrice
         else:
