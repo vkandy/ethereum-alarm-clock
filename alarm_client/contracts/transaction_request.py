@@ -164,6 +164,7 @@ class TransactionRequestFactory(Contract):
             {
                 '__getitem__': lambda s, k: request_properties.__getitem__(k),
                 '__setitem__': lambda s, k, v: request_properties.__setitem__(k, v),
+                '__str__': lambda s: type(self).get_props_display(s),
             },
         )()
 
