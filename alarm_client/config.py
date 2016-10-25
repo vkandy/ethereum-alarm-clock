@@ -101,6 +101,10 @@ class Config(object):
     _timestamp_scheduler_address = None
     _payment_lib_address = None
 
+    # TODO: Once https://github.com/ethcore/parity/issues/1966 is fixed this
+    # can be removed.
+    tracked_transaction_hashs = None
+
     def __init__(self,
                  web3,
                  compiled_assets_path,
@@ -123,6 +127,8 @@ class Config(object):
         self._locks = pylru.lrucache(2048)
         self.back_scan_seconds, self.forward_scan_seconds = scan_timestamp_range
         self.back_scan_blocks, self.forward_scan_blocks = scan_blocks_range
+
+        self.tracked_transaction_hashs = set()
 
     def get_logger(self, name):
         logger = logging.getLogger(name)
