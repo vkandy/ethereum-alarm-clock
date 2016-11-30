@@ -13,8 +13,6 @@ from web3.utils.encoding import (
 
 from alarm_client.contracts.transaction_request import TransactionRequestFactory
 
-from testrpc import testrpc
-
 
 NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 
@@ -23,6 +21,10 @@ NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 def request_tracker(unmigrated_chain, web3):
     chain = unmigrated_chain
     tracker = chain.get_contract('RequestTracker')
+
+    chain_code = web3.eth.getCode(tracker.address)
+    assert len(chain_code) > 10
+
     return tracker
 
 
@@ -550,9 +552,7 @@ def digger_proxy(chain, DiggerProxy):
 
 @pytest.fixture()
 def evm(web3):
-    tester_client = testrpc.tester_client
-    assert web3.eth.blockNumber == len(tester_client.evm.blocks) - 1
-    return tester_client.evm
+    return web3.currentProvider.server.application.rpc_methods.client.evm
 
 
 @pytest.fixture()
