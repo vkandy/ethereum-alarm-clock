@@ -1,4 +1,5 @@
-//pragma solidity 0.4.1;
+pragma solidity ^0.4.0;
+
 
 import {RequestFactoryInterface} from "contracts/RequestFactoryInterface.sol";
 import {PaymentLib} from "contracts/PaymentLib.sol";

@@ -1,3 +1,6 @@
+pragma solidity ^0.4.0;
+
+
 library IterTools {
     /*
      *  Return true if any of the values in the boolean array are true

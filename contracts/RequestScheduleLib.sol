@@ -1,4 +1,5 @@
-//pragma solidity 0.4.1;
+pragma solidity ^0.4.0;
+
 
 import {MathLib} from "contracts/MathLib.sol";
 
@@ -10,12 +11,12 @@ library RequestScheduleLib {
      *  The manner in which this schedule specifies time.
      *
      *  Null: present to require this value be explicitely specified
-     *  Blocks: execution schedule determined by block.number
+     *  Block: execution schedule determined by block.number
      *  Timestamp: execution schedule determined by block.timestamp
      */
     enum TemporalUnit {
         Null,
-        Blocks,
+        Block,
         Timestamp
     }
 
@@ -55,7 +56,7 @@ library RequestScheduleLib {
     function getNow(TemporalUnit temporalUnit) internal returns (uint) {
         if (temporalUnit == TemporalUnit.Timestamp) {
             return now;
-        } else if (temporalUnit == TemporalUnit.Blocks) {
+        } else if (temporalUnit == TemporalUnit.Block) {
             return block.number;
         } else {
             // Unsupported unit.
@@ -179,7 +180,7 @@ library RequestScheduleLib {
      */
     function validateTemporalUnit(uint temporalUnitAsUInt) returns (bool) {
         return (temporalUnitAsUInt != uint(TemporalUnit.Null) && (
-            temporalUnitAsUInt == uint(TemporalUnit.Blocks) || 
+            temporalUnitAsUInt == uint(TemporalUnit.Block) || 
             temporalUnitAsUInt == uint(TemporalUnit.Timestamp)
         ));
     }

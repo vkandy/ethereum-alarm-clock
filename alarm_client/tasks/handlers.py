@@ -26,21 +26,31 @@ def locked_txn_request(fn):
     return inner
 
 
-def has_pending_transaction(txn_request):
-    web3 = txn_request.web3
+def has_pending_transaction(config, txn_request):
+    web3 = config.web3
+    from_address = web3.eth.defaultAccount
 
-    pending_transactions = web3.txpool.content['pending'].get(
-        web3.eth.defaultAccount, {},
-    ).values()
-    queued_transactions = web3.txpool.content['queued'].get(
-        web3.eth.defaultAccount, {},
-    ).values()
-    all_transactions = itertools.chain(
-        itertools.chain.from_iterable(pending_transactions),
-        itertools.chain.from_iterable(queued_transactions),
-    )
+    try:
+        txpool_content = web3.txpool.content
+    except ValueError:
+        all_transactions = [
+            web3.eth.getTransaction(txn_hash)
+            for txn_hash in config.tracked_transaction_hashes
+        ]
+    else:
+        pending_transactions = txpool_content['pending'].get(
+            from_address, {},
+        ).values()
+        queued_transactions = txpool_content['queued'].get(
+            from_address, {},
+        ).values()
+        all_transactions = itertools.chain(
+            itertools.chain.from_iterable(pending_transactions),
+            itertools.chain.from_iterable(queued_transactions),
+        )
+
     for txn in all_transactions:
-        if txn['to'] == txn_request.address:
+        if txn['blockHash'] is None and txn['to'] == txn_request.address:
             return True
     else:
         return False

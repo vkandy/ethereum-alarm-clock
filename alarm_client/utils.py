@@ -114,6 +114,7 @@ class _cache_if_not_eq(object):
         value = self.func(instance)
 
         if value != self.default_value:
+            print("Caching non-default:", self.name, value)
             instance.__dict__[self.name] = value
         return value
 

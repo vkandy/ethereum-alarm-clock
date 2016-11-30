@@ -1,4 +1,4 @@
-//pragma solidity 0.4.1;
+pragma solidity ^0.4.0;
 
 
 import {RequestScheduleLib} from "contracts/RequestScheduleLib.sol";
@@ -26,14 +26,14 @@ contract SchedulerInterface {
      * https://github.com/ethereum/solidity/issues/1116
      */
     modifier doReset {
-        if (uint(temporalUnit) == 1) {
+        if (temporalUnit == RequestScheduleLib.TemporalUnit.Block) {
             futureTransaction.resetAsBlock();
-        } else if (uint(temporalUnit) == 2) {
+        } else if (temporalUnit == RequestScheduleLib.TemporalUnit.Timestamp) {
             futureTransaction.resetAsTimestamp();
         } else {
             throw;
         }
-        _ 
+        _;
     }
 
     /*

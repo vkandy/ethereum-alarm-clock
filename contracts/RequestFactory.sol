@@ -1,4 +1,5 @@
-//pragma solidity 0.4.1;
+pragma solidity ^0.4.0;
+
 
 import {RequestFactoryInterface} from "contracts/RequestFactoryInterface.sol";
 import {TransactionRequest} from "contracts/TransactionRequest.sol";
@@ -39,7 +40,7 @@ contract RequestFactory is RequestFactoryInterface {
      */
     function createRequest(address[3] addressArgs,
                            uint[11] uintArgs,
-                           bytes callData) returns (address) {
+                           bytes callData) payable returns (address) {
         var request = (new TransactionRequest).value(msg.value)(
             [
                 msg.sender,
@@ -107,7 +108,7 @@ contract RequestFactory is RequestFactoryInterface {
      */
     function createValidatedRequest(address[3] addressArgs,
                                     uint[11] uintArgs,
-                                    bytes callData) returns (address) {
+                                    bytes callData) payable returns (address) {
         var is_valid = validateRequestParams(addressArgs,
                                              uintArgs,
                                              callData,
