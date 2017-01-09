@@ -33,8 +33,10 @@ class BlockCache(object):
             )
             try:
                 return self.cache[cache_key]
+                print("From Cache:", cache_key)
             except KeyError:
                 return_value = method(inner_self, *args, **kwargs)
+                print("Computed:", cache_key, return_value)
                 self.cache[cache_key] = return_value
                 return return_value
         return inner
