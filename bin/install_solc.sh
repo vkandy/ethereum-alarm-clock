@@ -6,6 +6,7 @@
 set -e
 set -u
 
+# conditionally fetch binaries/script, and put in Travis-cached dir
 if [ ! -e $SOLC_BINARY ] ; then
     echo "Solidity not present, fetching binary and dependency installation script."
 
@@ -20,18 +21,9 @@ if [ ! -e $SOLC_BINARY ] ; then
 
     # get install_deps.sh script
     cd $SOLC_BINARY_PATH
-    wget "https://github.com/ethereum/solidity/raw/v$SOLC_VERSION/scripts/install_deps.sh"
-    chmod +x install_deps.sh
-
-    # go back
-    cd ../..
+    wget -O install_solc_deps.sh "https://github.com/ethereum/solidity/raw/v$SOLC_VERSION/scripts/install_deps.sh"
+    chmod +x install_solc_deps.sh
 fi
 
-echo "Installing Solidity dependencies..."
-cd solc-versions
-$SOLC_BINARY_PATH/install_deps.sh
-
-# DEBUG
-ls -l $SOLC_BINARY
-file $SOLC_BINARY
-ldd $SOLC_BINARY
+# unconditionally install deps
+$SOLC_BINARY_PATH/install_solc_deps.sh
