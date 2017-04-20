@@ -1,6 +1,6 @@
 import pytest
 
-from web3.utils.encoding import (
+from eth_utils import (
     decode_hex,
 )
 

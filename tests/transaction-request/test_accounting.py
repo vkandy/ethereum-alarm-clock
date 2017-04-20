@@ -1,6 +1,5 @@
 import pytest
-from web3.utils.encoding import decode_hex
-
+from eth_utils import decode_hex
 
 def test_txn_request_payments(chain,
                               web3,
