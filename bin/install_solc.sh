@@ -7,35 +7,26 @@ set -e
 set -u
 
 if [ ! -e $SOLC_BINARY ] ; then
-    # cache not present (first run or cleared), perform full installation procedure
+    echo "Solidity not present, performing full installation procedure..."
 
-    # pwd: .
-    wget "https://github.com/ethereum/solidity/archive/v$SOLC_VERSION.tar.gz"
-    install -d solc-versions
+    mkdir -p solc-versions
     cd solc-versions
 
-    # pwd: ./solc-versions
-    tar -zxvf ../v$SOLC_VERSION.tar.gz
-    cd solidity-$SOLC_VERSION
+    # get sources, put in dir source-$SOLC_VERSION
+    git clone --recurse-submodules --branch v$SOLC_VERSION --depth 50 \
+        https://github.com/ethereum/solidity.git source-$SOLC_VERSION
+    ./source-$SOLC_VERSION/scripts/install_deps.sh
 
-    # pwd: ./solc-versions/solidity-$SOLC_VERSION
-    ./scripts/install_deps.sh
+    # get pre-built binaries, put in dir binary--$SOLC_VERSION
+    wget https://github.com/ethereum/solidity/releases/download/v$SOLC_VERSION/solidity-ubuntu-trusty.zip
+    unzip solidity-ubuntu-trusty.zip -d binary-$SOLC_VERSION
 
-    mkdir -p build
-    cd build
-
-    # pwd: ./solc-versions/solidity-$SOLC_VERSION/build
-    cmake .. && make
-
-    ln -fs $PWD/solc/solc $SOLC_BINARY
-    chmod +x $SOLC_BINARY
-
-    echo "Solidity compiler installed at $SOLC_BINARY"
+    echo "Solidity installed at $SOLC_BINARY"
 else
-    # cached version present, just install package dependencies
-    echo "Solidity compiler already installed at $SOLC_BINARY"
-    cd solc-versions/solidity-$SOLC_VERSION
-    ./scripts/install_deps.sh
+    echo "Solidity already installed at $SOLC_BINARY, installing dependencies..."
+
+    cd solc-versions
+    ./source-$SOLC_VERSION/scripts/install_deps.sh
 fi
 
 # DEBUG
