@@ -23,8 +23,8 @@ if [ ! -e solc-versions/solidity-0.3.6/build/solc/solc ] ; then
 else
     # cached version present, just install package dependencies
     cd solc-versions
-    cd solidity-0.3.6
-    ls -al
+    ls -R . # FIXME: debug, remove
+    cd solidity-${version}
     ./scripts/install_deps.sh
     echo "Geth already installed at $PWD/solc/solc-0.3.6"
 fi
