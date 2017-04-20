@@ -4,6 +4,7 @@ populus>=1.2.0
 web3>=3.0.2
 eth-testrpc>=0.8.7
 ethereum-tester-client>=1.2.4
+ethereum-utils>=0.2.0
 click>=6.6
 pylru>=1.0.9
 python-dotenv>=0.6.0

@@ -7,7 +7,7 @@ import pytest
 import rlp
 from ethereum import blocks
 
-from web3.utils.encoding import (
+from eth_utils import (
     decode_hex,
 )
 
