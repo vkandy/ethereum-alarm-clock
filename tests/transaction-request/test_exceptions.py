@@ -1,4 +1,4 @@
-from web3.utils.encoding import decode_hex
+from eth_utils import decode_hex
 
 
 def test_txn_request_for_txn_that_throw_exception(chain,

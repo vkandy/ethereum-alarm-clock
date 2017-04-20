@@ -7,12 +7,11 @@ import pytest
 import rlp
 from ethereum import blocks
 
-from web3.utils.encoding import (
+from eth_utils import (
     decode_hex,
 )
 
 from alarm_client.contracts.transaction_request import TransactionRequestFactory
-
 
 NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
 
