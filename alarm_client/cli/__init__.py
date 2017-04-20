@@ -19,10 +19,14 @@ def repl(ctx):
     """
     main_ctx = ctx.parent
     web3 = main_ctx.web3  # noqa
-    #config = main_ctx.config
+    config = main_ctx.config
 
-    #tracker = config.tracker  # noqa
-    #factory = config.factory  # noqa
+    arst = config.get_transaction_request('0x39fbf5879eff2fd338f0f5ccd01a3556ec3c5fc7')
+    print(arst.paymentModifier)
+    print(arst)
+
+    tracker = config.tracker  # noqa
+    factory = config.factory  # noqa
 
     import pdb
     pdb.set_trace()  # noqa

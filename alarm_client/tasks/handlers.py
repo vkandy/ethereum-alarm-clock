@@ -26,21 +26,31 @@ def locked_txn_request(fn):
     return inner
 
 
-def has_pending_transaction(txn_request):
-    web3 = txn_request.web3
+def has_pending_transaction(config, txn_request):
+    web3 = config.web3
+    from_address = web3.eth.defaultAccount
 
-    pending_transactions = web3.txpool.content['pending'].get(
-        web3.eth.defaultAccount, {},
-    ).values()
-    queued_transactions = web3.txpool.content['queued'].get(
-        web3.eth.defaultAccount, {},
-    ).values()
-    all_transactions = itertools.chain(
-        itertools.chain.from_iterable(pending_transactions),
-        itertools.chain.from_iterable(queued_transactions),
-    )
+    try:
+        txpool_content = web3.txpool.content
+    except ValueError:
+        all_transactions = [
+            web3.eth.getTransaction(txn_hash)
+            for txn_hash in config.tracked_transaction_hashes
+        ]
+    else:
+        pending_transactions = txpool_content['pending'].get(
+            from_address, {},
+        ).values()
+        queued_transactions = txpool_content['queued'].get(
+            from_address, {},
+        ).values()
+        all_transactions = itertools.chain(
+            itertools.chain.from_iterable(pending_transactions),
+            itertools.chain.from_iterable(queued_transactions),
+        )
+
     for txn in all_transactions:
-        if txn['to'] == txn_request.address:
+        if txn['blockHash'] is None and txn['to'] == txn_request.address:
             return True
     else:
         return False
@@ -110,8 +120,8 @@ def claim_txn_request(config, txn_request):
 
     payment_if_claimed = (
         txn_request.payment *
-        txn_request.paymentModifier *
-        txn_request.claimPaymentModifier
+        txn_request.paymentMultiplier *
+        txn_request.currentPaymentModifier
     ) // 100 // 100
     claim_deposit = 2 * txn_request.payment
     gas_to_claim = txn_request.estimateGas({'value': claim_deposit}).claim()
@@ -183,12 +193,24 @@ def execute_txn_request(config, txn_request):
         )
         return
 
+    if txn_request.isClaimedBy(web3.eth.defaultAccount):
+        expected_payment = (
+            txn_request.payment *
+            txn_request.paymentMultiplier *
+            txn_request.paymentModifier // 100 // 100
+        )
+    else:
+        expected_payment = (
+            txn_request.payment *
+            txn_request.paymentMultiplier // 100
+        )
+
     logger.info(
         "Attempting execution.  Now: %s | windowStart: %s | "
         "expectedPayment: %s | claimedBy: %s | inReservedWindow: %s",
         txn_request.now,
         txn_request.windowStart,
-        txn_request.payment * txn_request.paymentModifier // 100,
+        expected_payment,
         txn_request.claimedBy,
         "Yes" if txn_request.inReservedWindow else "No",
     )

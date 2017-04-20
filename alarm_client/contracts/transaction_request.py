@@ -33,8 +33,10 @@ class BlockCache(object):
             )
             try:
                 return self.cache[cache_key]
+                print("From Cache:", cache_key)
             except KeyError:
                 return_value = method(inner_self, *args, **kwargs)
+                print("Computed:", cache_key, return_value)
                 self.cache[cache_key] = return_value
                 return return_value
         return inner
@@ -164,6 +166,7 @@ class TransactionRequestFactory(Contract):
             {
                 '__getitem__': lambda s, k: request_properties.__getitem__(k),
                 '__setitem__': lambda s, k, v: request_properties.__setitem__(k, v),
+                '__str__': lambda s: type(self).get_props_display(s),
             },
         )()
 
@@ -224,7 +227,7 @@ class TransactionRequestFactory(Contract):
 
     @property
     @block_cached
-    def claimPaymentModifier(self):
+    def currentPaymentModifier(self):
         return 100 * (
             self.now - self.claimWindowStart
         ) // self.claimWindowSize
@@ -299,7 +302,7 @@ class TransactionRequestFactory(Contract):
 
     @property
     @block_cached
-    def paymentModifier(self):
+    def paymentMultiplier(self):
         if self.web3.eth.gasPrice > self.anchorGasPrice:
             return self.anchorGasPrice * 100 // self.web3.eth.gasPrice
         else:

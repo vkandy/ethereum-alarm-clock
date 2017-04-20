@@ -1,4 +1,4 @@
-//pragma solidity 0.4.1;
+pragma solidity ^0.4.0;
 
 
 contract TransactionRequestInterface {
@@ -7,7 +7,7 @@ contract TransactionRequestInterface {
      */
     function execute() public returns (bool);
     function cancel() public returns (bool);
-    function claim() public returns (bool);
+    function claim() public payable returns (bool);
 
     /*
      *  Data accessors

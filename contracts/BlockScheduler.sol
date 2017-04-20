@@ -1,4 +1,4 @@
-//pragma solidity 0.4.1;
+pragma solidity ^0.4.0;
 
 
 import {RequestScheduleLib} from "contracts/RequestScheduleLib.sol";

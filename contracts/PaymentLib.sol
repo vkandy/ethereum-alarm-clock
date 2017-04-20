@@ -1,4 +1,5 @@
-//pragma solidity 0.4.1;
+pragma solidity ^0.4.0;
+
 
 import {ExecutionLib} from "contracts/ExecutionLib.sol";
 import {SafeSendLib} from "contracts/SafeSendLib.sol";

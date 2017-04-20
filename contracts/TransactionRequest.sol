@@ -1,4 +1,5 @@
-//pragma solidity 0.4.1;
+pragma solidity ^0.4.0;
+
 
 import {RequestLib} from "contracts/RequestLib.sol";
 import {TransactionRequestInterface} from "contracts/TransactionRequestInterface.sol";
@@ -27,7 +28,7 @@ contract TransactionRequest is Digger, TransactionRequestInterface {
      */
     function TransactionRequest(address[4] addressArgs,
                                 uint[11] uintArgs,
-                                bytes callData) {
+                                bytes callData) payable {
         txnRequest.initialize(addressArgs, uintArgs, callData);
     }
 
@@ -51,7 +52,7 @@ contract TransactionRequest is Digger, TransactionRequestInterface {
         return txnRequest.cancel();
     }
 
-    function claim() public returns (bool) {
+    function claim() public payable returns (bool) {
         return txnRequest.claim();
     }
 
