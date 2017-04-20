@@ -5,7 +5,8 @@ dist: trusty
 sudo: required
 env:
   global:
-    - SOLC_BINARY="$TRAVIS_BUILD_DIR/solc-versions/solc-0.4.6/solc"
+    - SOLC_VERSION="0.4.6"
+    - SOLC_BINARY="$TRAVIS_BUILD_DIR/solc-versions/solc-$SOLC_VERSION/solc"
   matrix:
     - TEST_DIR=block-scheduling
     - TEST_DIR=timestamp-scheduling
@@ -16,9 +17,9 @@ cache:
   - pip: true
   - directories:
     - $HOME/.ethash
-    - $TRAVIS_BUILD_DIR/solc-versions/solc-0.4.6/
-    - $TRAVIS_BUILD_DIR/solc-versions/solidity-0.4.6/scripts/
-    - $TRAVIS_BUILD_DIR/solc-versions/solidity-0.4.6/build/
+    - $TRAVIS_BUILD_DIR/solc-versions/solc-$SOLC_VERSION/
+    - $TRAVIS_BUILD_DIR/solc-versions/solidity-$SOLC_VERSION/scripts/
+    - $TRAVIS_BUILD_DIR/solc-versions/solidity-$SOLC_VERSION/build/
 before_install:
   - sudo add-apt-repository -y ppa:ethereum/ethereum
   - sudo apt-get update
@@ -30,7 +31,7 @@ install:
   - python setup.py install
 before_script:
   - find $TRAVIS_BUILD_DIR/solc-versions/ -exec file {} \;
-  - ./solc-versions/solc-0.4.6/solc --version
+  - ./solc-versions/solc-$SOLC_VERSION/solc --version
   - mkdir -p $HOME/.ethash
   - geth makedag 0 $HOME/.ethash
 script:

@@ -6,27 +6,39 @@
 set -e
 set -u
 
-# currently just one, should be the same as in `.travis.yml`, section `cache`
-version="0.4.6"
-
-if [ ! -e solc-versions/solidity-${version}/build/solc/solc ] ; then
+if [ ! -e $SOLC_BINARY ] ; then
     # cache not present (first run or cleared), perform full installation procedure
-    wget "https://github.com/ethereum/solidity/archive/v${version}.tar.gz"
+
+    # pwd: .
+    wget "https://github.com/ethereum/solidity/archive/v$SOLC_VERSION.tar.gz"
     install -d solc-versions
     cd solc-versions
-    tar -zxvf ../v${version}.tar.gz
-    cd solidity-${version}
+
+    # pwd: ./solc-versions
+    tar -zxvf ../v$SOLC_VERSION.tar.gz
+    cd solidity-$SOLC_VERSION
+
+    # pwd: ./solc-versions/solidity-$SOLC_VERSION
     ./scripts/install_deps.sh
+
     mkdir -p build
     cd build
+
+    # pwd: ./solc-versions/solidity-$SOLC_VERSION/build
     cmake .. && make
-    ln -fs $PWD/solc/solc ../../../solc-versions/solc-${version}
-    chmod +x ../../../solc-versions/solc-${version}
-    echo "Solidity compiler installed at $PWD/solc-${version}"
+
+    ln -fs $PWD/solc/solc $SOLC_BINARY
+    chmod +x $SOLC_BINARY
+
+    echo "Solidity compiler installed at $SOLC_BINARY"
 else
     # cached version present, just install package dependencies
-    cd solc-versions
-    cd solidity-${version}
+    echo "Solidity compiler already installed at $SOLC_BINARY"
+    cd solc-versions/solidity-$SOLC_VERSION
     ./scripts/install_deps.sh
-    echo "Solidity compiler already installed at $PWD/solc/solc-${version}"
 fi
+
+# DEBUG
+ls -l $SOLC_BINARY
+file $SOLC_BINARY
+ldd $SOLC_BINARY
