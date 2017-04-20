@@ -1,24 +1,33 @@
 #!/bin/bash
 #
-# Install solc 
+# Install solc
 #
 
 set -e
 set -u
 
-if [ ! -e solc-versions/solidity-0.3.6/build/solc/solc ] ; then
-    wget -O solc.tar.gz "https://github.com/ethereum/solidity/archive/v0.3.6.tar.gz"
+# currently just one, should be the same as in `.travis.yml`, section `cache`
+version="0.3.6"
+
+if [ ! -e solc-versions/solidity-${version}/build/solc/solc ] ; then
+    # cache not present (first run or cleared), perform full installation procedure
+    wget "https://github.com/ethereum/solidity/archive/v${version}.tar.gz"
     install -d solc-versions
     cd solc-versions
-    tar -zxvf ../solc.tar.gz
-    cd solidity-0.3.6
+    tar -zxvf ../v${version}.tar.gz
+    cd solidity-${version}
     ./scripts/install_deps.sh
     mkdir -p build
     cd build
     cmake .. && make
-    ln -fs $PWD/solc/solc ../../../solc-versions/solc-0.3.6
-    chmod +x ../../../solc-versions/solc-0.3.6
-    echo "Geth installed at $PWD/solc-0.3.6"
+    ln -fs $PWD/solc/solc ../../../solc-versions/solc-${version}
+    chmod +x ../../../solc-versions/solc-${version}
+    echo "Geth installed at $PWD/solc-${version}"
 else
-    echo "Geth already installed at $PWD/solc/solc-0.3.6"
+    # cached version present, just install package dependencies
+    cd solc-versions
+    find ./ # FIXME: debug "list all files", remove
+    cd solidity-${version}
+    ./scripts/install_deps.sh
+    echo "Geth already installed at $PWD/solc/solc-${version}"
 fi
