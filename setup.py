@@ -28,6 +28,7 @@ setup(
     ],
     tests_require=[
         "ethereum-utils>=0.2.0",
+        "eth-testrpc>=0.9.0",
     ],
     license="MIT",
     zip_safe=False,

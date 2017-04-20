@@ -13,7 +13,7 @@ from eth_utils import (
 
 from alarm_client.contracts.transaction_request import TransactionRequestFactory
 
-from testrpc import testrpc
+import testrpc
 
 
 NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
