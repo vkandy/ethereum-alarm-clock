@@ -26,7 +26,6 @@ if [ ! -e solc-versions/solidity-${version}/build/solc/solc ] ; then
 else
     # cached version present, just install package dependencies
     cd solc-versions
-    find ./ # FIXME: debug "list all files", remove
     cd solidity-${version}
     ./scripts/install_deps.sh
     echo "Solidity compiler already installed at $PWD/solc/solc-${version}"
