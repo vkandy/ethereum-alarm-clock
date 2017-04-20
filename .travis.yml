@@ -11,10 +11,10 @@ env:
     - LD_LIBRARY_PATH="$SOLC_BINARY_PATH"
   matrix:
     - TEST_DIR=block-scheduling
-#    - TEST_DIR=timestamp-scheduling
-#    - TEST_DIR=request-factory
-#    - TEST_DIR=request-tracker
-#    - TEST_DIR=transaction-request
+    - TEST_DIR=timestamp-scheduling
+    - TEST_DIR=request-factory
+    - TEST_DIR=request-tracker
+    - TEST_DIR=transaction-request
 cache:
   - pip: true
   - directories:
