@@ -1,9 +1,9 @@
-//pragma solidity 0.4.1;
+pragma solidity ^0.4.15;
 
 
-import {RequestScheduleLib} from "contracts/RequestScheduleLib.sol";
-import {SchedulerInterface} from "contracts/SchedulerInterface.sol";
-import {SchedulerLib} from "contracts/SchedulerLib.sol";
+import {RequestScheduleLib} from "contracts/scheduler/RequestScheduleLib.sol";
+import {SchedulerInterface} from "contracts/scheduler/SchedulerInterface.sol";
+import {SchedulerLib} from "contracts/scheduler/SchedulerLib.sol";
 
 
 contract BaseScheduler is SchedulerInterface {
@@ -27,8 +27,8 @@ contract BaseScheduler is SchedulerInterface {
      *  address toAddress;
      */
     function scheduleTransaction(address toAddress,
-                                 bytes callData,
-                                 uint[4] uintArgs) doReset public returns (address) {
+    bytes callData,
+    uint[4] uintArgs) doReset public returns (address) {
         futureTransaction.toAddress = toAddress;
         futureTransaction.callData = callData;
         futureTransaction.callGas = uintArgs[0];
@@ -59,8 +59,8 @@ contract BaseScheduler is SchedulerInterface {
      *  address toAddress;
      */
     function scheduleTransaction(address toAddress,
-                                 bytes callData,
-                                 uint[7] uintArgs) doReset public returns (address) {
+    bytes callData,
+    uint[7] uintArgs) doReset public returns (address) {
         futureTransaction.toAddress = toAddress;
         futureTransaction.callData = callData;
         futureTransaction.callGas = uintArgs[0];

@@ -1,12 +1,13 @@
-//pragma solidity 0.4.1;
+pragma solidity ^0.4.15;
 
-import {ExecutionLib} from "contracts/ExecutionLib.sol";
-import {RequestScheduleLib} from "contracts/RequestScheduleLib.sol";
+
+import {ExecutionLib} from "contracts/lib/ExecutionLib.sol";
+import {RequestScheduleLib} from "contracts/scheduler/RequestScheduleLib.sol";
 import {ClaimLib} from "contracts/ClaimLib.sol";
 import {RequestMetaLib} from "contracts/RequestMetaLib.sol";
-import {PaymentLib} from "contracts/PaymentLib.sol";
+import {PaymentLib} from "contracts/lib/PaymentLib.sol";
 import {SafeSendLib} from "contracts/SafeSendLib.sol";
-import {MathLib} from "contracts/MathLib.sol";
+import {MathLib} from "contracts/lib/MathLib.sol";
 
 
 library RequestLib {
@@ -450,7 +451,7 @@ library RequestLib {
         return _EXECUTION_GAS_OVERHEAD;
     }
 
-    
+
     /*
      *  The amount of gas used by the portion of the `execute` function
      *  that cannot be accounted for via gas tracking.
@@ -568,7 +569,7 @@ library RequestLib {
             if (msg.sender.sendOrThrow(msg.value)) {
                 return false;
             }
-            throw;
+            assert(false);
         }
         self.claimData.claim(self.schedule.computePaymentModifier());
         Claimed();

@@ -1,4 +1,5 @@
-//pragma solidity 0.4.1;
+pragma solidity ^0.4.15;
+
 
 import {RequestLib} from "contracts/RequestLib.sol";
 import {TransactionRequestInterface} from "contracts/TransactionRequestInterface.sol";
@@ -26,8 +27,8 @@ contract TransactionRequest is Digger, TransactionRequestInterface {
      *  uintArgs[10] - txnData.requiredStackDepth
      */
     function TransactionRequest(address[4] addressArgs,
-                                uint[11] uintArgs,
-                                bytes callData) {
+    uint[11] uintArgs,
+    bytes callData) {
         txnRequest.initialize(addressArgs, uintArgs, callData);
     }
 
@@ -61,20 +62,22 @@ contract TransactionRequest is Digger, TransactionRequestInterface {
     //
     //  TODO: figure out why returning RequestLib.serialize() isn't working.
     //
-    function requestData() constant returns (address[6],
-                                             bool[3],
-                                             uint[15],
-                                             uint8[1]) {
-        if (txnRequest.serialize()) {
-            return (
-                txnRequest.serializedValues.addressValues,
-                txnRequest.serializedValues.boolValues,
-                txnRequest.serializedValues.uintValues,
-                txnRequest.serializedValues.uint8Values
-            );
-        } else {
-            throw;
-        }
+    function requestData()
+    constant
+    returns (
+        address[6],
+        bool[3],
+        uint[15],
+        uint8[1]
+    )
+    {
+        assert(txnRequest.serialize());
+        return (
+            txnRequest.serializedValues.addressValues,
+            txnRequest.serializedValues.boolValues,
+            txnRequest.serializedValues.uintValues,
+            txnRequest.serializedValues.uint8Values
+        );
     }
 
     function callData() constant returns (bytes) {

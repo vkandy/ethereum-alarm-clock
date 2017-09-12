@@ -1,6 +1,6 @@
-//pragma solidity 0.4.1;
+pragma solidity ^0.4.15;
 
-import {MathLib} from "contracts/MathLib.sol";
+import {MathLib} from "contracts/lib/MathLib.sol";
 
 
 library RequestScheduleLib {
@@ -53,13 +53,12 @@ library RequestScheduleLib {
     }
 
     function getNow(TemporalUnit temporalUnit) internal returns (uint) {
+        require(temporalUnit == TemporalUnit.Timestamp || temporalUnit == TemporalUnit.Blocks);
+
         if (temporalUnit == TemporalUnit.Timestamp) {
             return now;
         } else if (temporalUnit == TemporalUnit.Blocks) {
             return block.number;
-        } else {
-            // Unsupported unit.
-            throw;
         }
     }
 
@@ -67,14 +66,12 @@ library RequestScheduleLib {
      * The modifier that will be applied to the payment value for a claimed call.
      */
     function computePaymentModifier(ExecutionWindow storage self) returns (uint8) {
-        if (!inClaimWindow(self)) {
-            throw;
-        }
+        require(inClaimWindow(self));
+
         uint paymentModifier = getNow(self).flooredSub(firstClaimBlock(self))
                                            .safeMultiply(100) / self.claimWindowSize;
-        if (paymentModifier > 100) {
-            throw;
-        }
+        require(paymentModifier <= 100);
+
         return uint8(paymentModifier);
     }
 

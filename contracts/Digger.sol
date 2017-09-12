@@ -1,5 +1,4 @@
-//pragma solidity 0.4.1;
-
+pragma solidity ^0.4.15;
 
 contract Digger {
     /*
@@ -8,6 +7,6 @@ contract Digger {
      */
     function __dig(uint n) constant returns (bool) {
         if (n == 0) return true;
-        if (!address(this).callcode(bytes4(sha3("__dig(uint256)")), n - 1)) throw;
+        assert(address(this).delegatecall(bytes4(sha3("__dig(uint256)")), n - 1));
     }
 }

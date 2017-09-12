@@ -1,11 +1,12 @@
-//pragma solidity 0.4.1;
+pragma solidity ^0.4.0;
+
 
 import {RequestFactoryInterface} from "contracts/RequestFactoryInterface.sol";
-import {PaymentLib} from "contracts/PaymentLib.sol";
-import {RequestScheduleLib} from "contracts/RequestScheduleLib.sol";
+import {PaymentLib} from "contracts/lib/PaymentLib.sol";
+import {RequestScheduleLib} from "contracts/scheduler/RequestScheduleLib.sol";
 import {RequestLib} from "contracts/RequestLib.sol";
 import {SafeSendLib} from "contracts/SafeSendLib.sol";
-import {MathLib} from "contracts/MathLib.sol";
+import {MathLib} from "contracts/lib/MathLib.sol";
 
 
 library SchedulerLib {
@@ -33,14 +34,14 @@ library SchedulerLib {
         uint claimWindowSize;
     }
 
-    /*
+    /**
      * Set common default values.
      */
     function resetCommon(FutureTransaction storage self) public returns (bool) {
         if (self.payment != 1000000 * tx.gasprice) {
             self.payment = 1000000 * tx.gasprice;
         }
-        if (self.donation != self.payment / 100 ) {
+        if (self.donation != self.payment / 100) {
             self.donation = self.payment / 100;
         }
         if (self.toAddress != msg.sender) {
@@ -58,7 +59,7 @@ library SchedulerLib {
         return true;
     }
 
-    /*
+    /**
      * Set default values for block based scheduling.
      */
     function resetAsBlock(FutureTransaction storage self) public returns (bool) {
@@ -83,7 +84,7 @@ library SchedulerLib {
         return true;
     }
 
-    /*
+    /**
      * Set default values for timestamp based scheduling.
      */
     function resetAsTimestamp(FutureTransaction storage self) public returns (bool) {
@@ -108,12 +109,18 @@ library SchedulerLib {
         return true;
     }
 
-    /*
+    /**
      *  The low level interface for creating a transaction request.
      */
-    function schedule(FutureTransaction storage self,
-                      address factoryAddress) public returns (address) {
+    function schedule(
+        FutureTransaction storage self,
+        address factoryAddress
+    )
+        public
+        returns (address)
+    {
         var factory = RequestFactoryInterface(factoryAddress);
+
         var endowment = PaymentLib.computeEndowment(
             self.payment,
             self.donation,
@@ -125,21 +132,21 @@ library SchedulerLib {
 
         address newRequestAddress = factory.createValidatedRequest.value(endowment)(
             [
-                msg.sender,           // meta.owner
-                DONATION_BENEFACTOR,  // paymentData.donationBenefactor
+                msg.sender, // meta.owner
+                DONATION_BENEFACTOR, // paymentData.donationBenefactor
                 self.toAddress        // txnData.toAddress
             ],
             [
-                self.donation,            // paymentData.donation
-                self.payment,             // paymentData.payment
-                self.claimWindowSize,     // scheduler.claimWindowSize
-                self.freezePeriod,        // scheduler.freezePeriod
-                self.reservedWindowSize,  // scheduler.reservedWindowSize
-                uint(self.temporalUnit),  // scheduler.temporalUnit (1: block, 2: timestamp)
-                self.windowSize,          // scheduler.windowSize
-                self.windowStart,         // scheduler.windowStart
-                self.callGas,             // txnData.callGas
-                self.callValue,           // txnData.callValue
+                self.donation, // paymentData.donation
+                self.payment, // paymentData.payment
+                self.claimWindowSize, // scheduler.claimWindowSize
+                self.freezePeriod, // scheduler.freezePeriod
+                self.reservedWindowSize, // scheduler.reservedWindowSize
+                uint(self.temporalUnit), // scheduler.temporalUnit (1: block, 2: timestamp)
+                self.windowSize, // scheduler.windowSize
+                self.windowStart, // scheduler.windowStart
+                self.callGas, // txnData.callGas
+                self.callValue, // txnData.callValue
                 self.requiredStackDepth   // txnData.requiredStackDepth
             ],
             self.callData

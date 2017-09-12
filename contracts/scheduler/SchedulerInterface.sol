@@ -1,8 +1,8 @@
-//pragma solidity 0.4.1;
+pragma solidity ^0.4.15;
 
 
-import {RequestScheduleLib} from "contracts/RequestScheduleLib.sol";
-import {SchedulerLib} from "contracts/SchedulerLib.sol";
+import {RequestScheduleLib} from "contracts/scheduler/RequestScheduleLib.sol";
+import {SchedulerLib} from "contracts/scheduler/SchedulerLib.sol";
 
 
 contract SchedulerInterface {
@@ -28,17 +28,19 @@ contract SchedulerInterface {
     modifier doReset {
         if (uint(temporalUnit) == 1) {
             futureTransaction.resetAsBlock();
-        } else if (uint(temporalUnit) == 2) {
+        }
+        else if (uint(temporalUnit) == 2) {
             futureTransaction.resetAsTimestamp();
-        } else {
+        }
+        else {
             throw;
         }
-        _ 
+        _;
     }
 
     /*
      *  Full scheduling API exposing all fields.
-     * 
+     *
      *  uintArgs[0] callGas
      *  uintArgs[1] callValue
      *  uintArgs[2] windowSize
@@ -47,12 +49,12 @@ contract SchedulerInterface {
      *  address toAddress;
      */
     function scheduleTransaction(address toAddress,
-                                 bytes callData,
-                                 uint[4] uintArgs) doReset public returns (address);
+    bytes callData,
+    uint[4] uintArgs) doReset public returns (address);
 
     /*
      *  Full scheduling API exposing all fields.
-     * 
+     *
      *  uintArgs[0] callGas
      *  uintArgs[1] callValue
      *  uintArgs[2] donation
@@ -64,6 +66,6 @@ contract SchedulerInterface {
      *  address toAddress;
      */
     function scheduleTransaction(address toAddress,
-                                 bytes callData,
-                                 uint[7] uintArgs) doReset public returns (address);
+    bytes callData,
+    uint[7] uintArgs) doReset public returns (address);
 }

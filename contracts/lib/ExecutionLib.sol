@@ -1,6 +1,8 @@
-//pragma solidity 0.4.1;
+pragma solidity ^0.4.15;
 
-
+/**
+ *
+ */
 library ExecutionLib {
     struct ExecutionData {
         // The address that the txn will be sent to.
@@ -41,7 +43,7 @@ library ExecutionLib {
      */
     function stackCanBeExtended(ExecutionData storage self) returns (bool) {
         if (self.requiredStackDepth == 0) return true;
-        return address(this).callcode
+        return address(this).delegatecall
                             .gas(_GAS_PER_DEPTH * self.requiredStackDepth)
                             (
                                 bytes4(sha3("__dig(uint256)")),

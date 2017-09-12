@@ -1,8 +1,11 @@
-//pragma solidity 0.4.1;
-
-import {MathLib} from "contracts/MathLib.sol";
+pragma solidity ^0.4.15;
 
 
+import {MathLib} from "contracts/lib/MathLib.sol";
+
+/**
+ *
+ */
 library SafeSendLib {
     using MathLib for uint;
 
@@ -34,16 +37,15 @@ library SafeSendLib {
      * send.
      */
     function safeSend(address to, uint value, uint sendGas) returns (uint) {
+
+        require(to != 0x0);
+
         if (value > this.balance) {
             value = this.balance;
         }
 
         if (value == 0) {
             return 0;
-        }
-
-        if (to == 0x0) {
-            throw;
         }
 
         if (sendGas > 0) {
@@ -68,21 +70,14 @@ library SafeSendLib {
      * Try to send to the account.  If the send fails, then throw.
      */
     function sendOrThrow(address to, uint value) returns (bool) {
-        if (value > this.balance) {
-            throw;
-        }
+        require(value <= this.balance);
+        require(to != 0x0);
 
         if (value == 0) {
             return true;
         }
 
-        if (to == 0x0) {
-            throw;
-        }
-
-        if (!to.call.value(value)()) {
-            throw;
-        }
+        assert(to.call.value(value)());
 
         return true;
     }

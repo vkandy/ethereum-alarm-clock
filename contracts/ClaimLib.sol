@@ -1,7 +1,8 @@
-//pragma solidity 0.4.1;
+pragma solidity ^0.4.15;
+
 
 import {SafeSendLib} from "contracts/SafeSendLib.sol";
-import {MathLib} from "contracts/MathLib.sol";
+import {MathLib} from "contracts/lib/MathLib.sol";
 
 
 library ClaimLib {
@@ -62,7 +63,7 @@ library ClaimLib {
             // re-entrance protection.
             self.claimDeposit = 0;
             self.claimDeposit = depositAmount.flooredSub(self.claimedBy.safeSend(depositAmount,
-                                                                                 sendGas));
+            sendGas));
         }
 
         return true;
